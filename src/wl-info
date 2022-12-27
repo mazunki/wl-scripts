@@ -32,7 +32,7 @@ fi
 if [ "$1" = "-f" ]; then
 	swaymsg -t get_tree | \
 		jq --arg identifier "$1" \
-		-r ${JQ_OPTS} 'recurse(.nodes[], .floating_nodes[]) | select(.rocused)'
+		-r ${JQ_OPTS} 'recurse(.nodes[], .floating_nodes[]) | select(.focused)'
 
 elif [ "$#" = "1" ]; then
 	swaymsg -t get_tree | \
