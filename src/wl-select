@@ -32,6 +32,6 @@ else
 	# Uses slurp to spit out the region of the clicked-upon window
 	swaymsg -t get_tree | \
 		jq -r 'recurse(.nodes[], .floating_nodes[]) | select(.pid and .visible) | {name} + .rect | "\(.x),\(.y) \(.width)x\(.height) \(.name)"' | \
-		slurp -or
+		slurp -o
 fi
 
