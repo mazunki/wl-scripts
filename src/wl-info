@@ -35,7 +35,9 @@ for arg in "$@"; do
 			JQ_OPTS=-C
 			;;
 		-r|--strict)
+			shift 1
 			WL_SELECT_OPTS=-r
+			;;
 		-*)
 			printf 'Invalid flag, ignoring: %s' "${arg}" >&2
 			shift 1
