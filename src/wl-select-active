@@ -17,6 +17,7 @@
 # Consider the following for your sway bindings
 #	bindsym $mod+o exec grim -g "$(wl-select-active)" - | wl-copy
 # 
+set -e
 
 if [ "$1" = '-v' ] || [ "$1" = '--verbose' ]; then
 	swaymsg -t get_tree | \

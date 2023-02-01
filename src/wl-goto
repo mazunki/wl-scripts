@@ -4,6 +4,7 @@
 # Just exec this program from your sway config in a binding,
 # and get ready to search through them with wofi! :)
 #
+set -e
 
 window="$(swaymsg -t get_tree -r |
 	jq -r 'recurse(.nodes[]) | select(.type != "workspace" and .type != "output") | .name' |

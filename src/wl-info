@@ -22,6 +22,7 @@
 # - wl-select, if using --select
 #
 # 
+set -e
 
 for arg in "$@"; do
 	case "$arg" in
@@ -33,6 +34,8 @@ for arg in "$@"; do
 			shift 1
 			JQ_OPTS=-C
 			;;
+		-r|--strict)
+			WL_SELECT_OPTS=-r
 		-*)
 			printf 'Invalid flag, ignoring: %s' "${arg}" >&2
 			shift 1
@@ -48,7 +51,7 @@ done
 : JQ_OPTS=${JQ_OPTS:--C}
 
 if [ "$#" = "0" ]; then
-	set -- $(wl-select)
+	set -- $(wl-select ${WL_SELECT_OPTS})
 fi
 
 if [ "$1" = "-f" ]; then

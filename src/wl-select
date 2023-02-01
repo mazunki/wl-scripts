@@ -19,6 +19,7 @@
 # Consider the following for your sway bindings
 #	bindsym $mod+Shift+p exec grim -g "$(wl-select)" - | wl-copy
 # 
+set -e
 
 
 for arg in "$@"; do
@@ -32,7 +33,7 @@ for arg in "$@"; do
 			shift 1
 			;;
 		-*)
-			printf 'Invalid flag, ignoring: %s' "${arg}" >&2
+			printf 'Invalid flag, ignoring: %s\n' "${arg}" >&2
 			shift 1
 			;;
 		--)
