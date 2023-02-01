@@ -24,17 +24,34 @@
 # 
 
 for arg in "$@"; do
-	if [ "$arg" = '-M' ]; then
-		shift 1
-		JQ_OPTS=-M
-	else
-		JQ_OPTS=-C
-	fi
+	case "$arg" in
+		-M)
+			shift 1
+			JQ_OPTS=-M
+			;;
+		-C)
+			shift 1
+			JQ_OPTS=-C
+			;;
+		-*)
+			printf 'Invalid flag, ignoring: %s' "${arg}" >&2
+			shift 1
+			;;
+		--)
+			break
+			;;
+		*)
+			;;
+	esac
 done
+
+: JQ_OPTS=${JQ_OPTS:--C}
 
 if [ "$#" = "0" ]; then
 	set -- $(wl-select)
 fi
+
+echo "op: $JQ_OPTS"
 
 if [ "$1" = "-f" ]; then
 	swaymsg -t get_tree | \
