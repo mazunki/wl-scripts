@@ -22,8 +22,15 @@
 # - wl-select, if using --select
 #
 # 
-export SWAYSOCK=${SWAYSOCK:-$(/bin/ls "${XDG_RUNTIME_DIR}"/sway-ipc*)}
-JQ_OPTS=${JQ_OPTS:--C}
+
+for arg in "$@"; do
+	if [ "$arg" = '-M' ]; then
+		shift 1
+		JQ_OPTS=-M
+	else
+		JQ_OPTS=-C
+	fi
+done
 
 if [ "$#" = "0" ]; then
 	set -- $(wl-select)
@@ -37,7 +44,7 @@ if [ "$1" = "-f" ]; then
 elif [ "$#" = "1" ]; then
 	swaymsg -t get_tree | \
 		jq --arg identifier "$1" \
-		-r ${JQ_OPTS} 'recurse(.nodes[], .floating_nodes[]) | select(.name == $identifier or .app_id == $identifier)'
+		-r ${JQ_OPTS} 'recurse(.nodes[], .floating_nodes[]) | select(.name == $identifier or .app_id == $identifier or (.pid|tostring) == $identifier)'
 
 elif [ "$#" = "2" ]; then
 	X=$(echo "$1" | awk -F',' '{print $1}')
