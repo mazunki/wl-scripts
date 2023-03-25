@@ -4,5 +4,5 @@ cmd="$@"
 swaymsg "split vertical"
 swaymsg "layout tabbed"
 "${cmd:?}"
-swaymsg "layout splitv"
+swaymsg "layout splith"
 
