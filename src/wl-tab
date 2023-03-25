@@ -1,6 +1,21 @@
 #!/bin/sh
-cmd="$@"
+# Want to keep your terminal around for an application, but the program
+# requires its own graphical window? Use me.
+#
+# Your program will be launched in a new tab, and you will return to your
+# standard split setup once it exits.
+#
+set -e
 
+usage() {
+	printf "Usage:\n"
+	printf "\twl-tab <command> [command args]...\n"
+}
+
+test $# -gt 0 || { usage; exit 1; }
+test $1 = "-h" && { usage; exit 0; }
+
+cmd="$@"
 swaymsg "split vertical"
 swaymsg "layout tabbed"
 "${cmd:?}"
