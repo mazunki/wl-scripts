@@ -15,9 +15,9 @@ usage() {
 test $# -gt 0 || { usage; exit 1; }
 test $1 = "-h" && { usage; exit 0; }
 
-cmd="$@"
+# cmd="$@"
 swaymsg "split vertical"
 swaymsg "layout tabbed"
-"${cmd:?}"
+${@:?}
 swaymsg "layout splith"
 
