@@ -53,9 +53,9 @@ hidden="$(printf '%s' "$tree" | jq -r --arg key "$key" '
 	recurse(.nodes[], .floating_nodes[]) | select(.app_id == $key or .window_properties.class == $key) | .id' | head -1)"
 
 if [ -n "$hidden" ]; then
-	swaymsg "[app_id=\"$key\"] scratchpad show"
-	swaymsg "[class=\"$key\"] scratchpad show"
+	swaymsg "[app_id=\"$key\"] scratchpad show" >/dev/null 2>&1 || true
+	swaymsg "[class=\"$key\"] scratchpad show" >/dev/null 2>&1 || true
 else
-	swaymsg "[app_id=\"$key\"] move scratchpad"
-	swaymsg "[class=\"$key\"] move scratchpad"
+	swaymsg "[app_id=\"$key\"] move scratchpad" >/dev/null 2>&1 || true
+	swaymsg "[class=\"$key\"] move scratchpad" >/dev/null 2>&1 || true
 fi
