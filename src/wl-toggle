@@ -1,0 +1,61 @@
+#!/bin/sh
+# Do you ever want to toggle a window like your
+# audio control panel through a keybind? Look no
+# further.
+#
+# This will toggle the visibility of a window by pushing
+# it into the scratchpad when you don't want to see it.
+# Matches the window by app_id (native Wayland apps) or
+# class (XWayland apps): whichever the window actually has.
+#
+# sticky for the window must be set separately via
+# a matching for_window rule in order to follow your workspace,
+# and you probably want floating, position and size too:
+#
+# ```ft=swayconfig
+# for_window {
+#     [app_id="com.saivert.pwvucontrol"] floating enable, sticky enable, resize set 941 1041, move position 1366 179
+# }
+# ```
+#
+#
+# Usage:
+#	wl-toggle <app_id-or-class> [launch-command...]
+#
+# Consider the following for your sway bindings, or a waybar on-click:
+#	bindsym $mod+p exec wl-toggle com.saivert.pwvucontrol pwvucontrol
+#
+# Dependencies:
+# - Compatible with sway, or any other compositor which provides a swaymsg interface
+# - jq, a JSON parser
+#
+set -e
+
+key="${1:?Usage: wl-toggle <app_id-or-class> [launch-command...]}"
+shift
+
+tree="$(swaymsg -t get_tree)"
+
+con_id="$(printf '%s' "$tree" | jq -r --arg key "$key" '
+	recurse(.nodes[], .floating_nodes[]) | select(.app_id == $key or .window_properties.class == $key) | .id' | head -1)"
+
+if [ -z "$con_id" ]; then
+	if [ "$#" -eq 0 ]; then
+		printf 'wl-toggle: no window matching "%s" running, and no launch command given\n' "$key" >&2
+		exit 1
+	fi
+	"$@" >/dev/null 2>&1 &
+	exit 0
+fi
+
+hidden="$(printf '%s' "$tree" | jq -r --arg key "$key" '
+	recurse(.nodes[]) | select(.name == "__i3_scratch") |
+	recurse(.nodes[], .floating_nodes[]) | select(.app_id == $key or .window_properties.class == $key) | .id' | head -1)"
+
+if [ -n "$hidden" ]; then
+	swaymsg "[app_id=\"$key\"] scratchpad show"
+	swaymsg "[class=\"$key\"] scratchpad show"
+else
+	swaymsg "[app_id=\"$key\"] move scratchpad"
+	swaymsg "[class=\"$key\"] move scratchpad"
+fi
